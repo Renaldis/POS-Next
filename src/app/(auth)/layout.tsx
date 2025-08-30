@@ -17,6 +17,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           <div className="bg-teal-500 flex p-2 items-center justify-center rounded-md">
             <Coffee className="size-4" />
           </div>
+          Rends Cafe
         </div>
         {children}
       </div>
