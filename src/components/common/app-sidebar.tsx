@@ -26,15 +26,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { SIDEBAR_MENU_LIST, SidebarMenuKey } from "@/constant/sidebar-constant";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { signOut } from "@/actions/auth-action";
+import { useAuthStore } from "@/stores/auth-store";
 
 export default function AppSidebar() {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
-  const profile = {
-    name: "Renaldi Saputra",
-    role: "admin",
-    avatar_url: "",
-  };
+
+  const profile = useAuthStore((state) => state.profile);
   return (
     <Sidebar>
       <SidebarHeader>
@@ -87,13 +86,15 @@ export default function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={""} alt="" />
-                    <AvatarFallback className="rounded-lg">A</AvatarFallback>
+                    <AvatarImage src={profile.avatar_url} alt={profile.name} />
+                    <AvatarFallback className="rounded-lg">
+                      {profile.name?.charAt(0)}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="leading-tight">
-                    <h4 className="truncate font-medium">Renaldi Saputra</h4>
-                    <p className="text-muted-foreground truncate text-xs">
-                      Admin
+                    <h4 className="truncate font-medium">{profile.name}</h4>
+                    <p className="text-muted-foreground truncate text-xs capitalize">
+                      {profile.role}
                     </p>
                   </div>
                   <EllipsisVertical className="ml-auto" size={4} />
@@ -108,20 +109,25 @@ export default function AppSidebar() {
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5">
                     <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={""} alt="" />
-                      <AvatarFallback className="rounded-lg">A</AvatarFallback>
+                      <AvatarImage
+                        src={profile.avatar_url}
+                        alt={profile.name}
+                      />
+                      <AvatarFallback className="rounded-lg">
+                        {profile.name?.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="leading-tight">
-                      <h4 className="truncate font-medium">Renaldi Saputra</h4>
-                      <p className="text-muted-foreground truncate text-xs">
-                        Admin
+                      <h4 className="truncate font-medium">{profile.name}</h4>
+                      <p className="text-muted-foreground truncate text-xs capitalize">
+                        {profile.role}
                       </p>
                     </div>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => signOut()}>
                     <LogOut />
                     Logout
                   </DropdownMenuItem>
