@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { HEADER_TABLE_USER } from "@/constant/user-constant";
+import useDataTable from "@/hooks/use-data-table";
 import { createClient } from "@/lib/supabase/client";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { useQuery } from "@tanstack/react-query";
@@ -15,25 +16,28 @@ import { toast } from "sonner";
 
 export default function UserManagement() {
   const supabase = createClient();
+  const { currentPage, currentLimit, handleChangePage, handleChangeLimit } =
+    useDataTable();
 
   const { data: users, isLoading } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["users", currentPage, currentLimit],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const result = await supabase
         .from("profiles")
         .select("*", { count: "exact" })
+        .range((currentPage - 1) * currentLimit, currentPage * currentLimit - 1)
         .order("created_at");
 
-      if (error)
+      if (result.error)
         toast.error("Get User data failed", {
-          description: error.message,
+          description: result.error.message,
         });
-      return data;
+      return result;
     },
   });
 
   const filteredData = useMemo(() => {
-    return (users || []).map((user, idx) => {
+    return (users?.data || []).map((user, idx) => {
       return [
         idx + 1,
         user.id,
@@ -64,8 +68,12 @@ export default function UserManagement() {
       ];
     });
   }, [users]);
-  console.log(filteredData);
-  console.log("users", users);
+
+  const totalPages = useMemo(() => {
+    return users && users?.count !== null
+      ? Math.ceil(users?.count / currentLimit)
+      : 0;
+  }, [users]);
 
   return (
     <div className="w-full">
@@ -84,8 +92,12 @@ export default function UserManagement() {
         header={HEADER_TABLE_USER}
         data={filteredData}
         isLoading={isLoading}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        currentLimit={currentLimit}
+        onChangePage={handleChangePage}
+        onChangeLimit={handleChangeLimit}
       />
-      {isLoading && <div>Loading</div>}
     </div>
   );
 }
