@@ -14,7 +14,6 @@ import { Fragment } from "react";
 export default function DashboardBreadcrumb() {
   const pathname = usePathname();
   const paths = pathname.split("/").slice(1);
-  console.log(paths.length);
 
   return (
     <Breadcrumb>
