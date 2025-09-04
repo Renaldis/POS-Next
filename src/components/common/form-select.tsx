@@ -23,9 +23,10 @@ export default function FormSelect<T extends FieldValues>({
   label,
   selectItem,
 }: {
-  form: UseFormReturn<T>; // dari rhf
-  name: Path<T>; // dari rhf
+  form: UseFormReturn<T>;
+  name: Path<T>;
   label: string;
+  placeholder?: string;
   selectItem: { value: string; label: string; disabled?: boolean }[];
 }) {
   return (
@@ -42,7 +43,7 @@ export default function FormSelect<T extends FieldValues>({
                   "border-red-500": form.formState.errors[name]?.message,
                 })}
               >
-                <SelectValue placeholder={`Select ${label}}`}></SelectValue>
+                <SelectValue placeholder={`Select ${label}`}></SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -64,6 +65,6 @@ export default function FormSelect<T extends FieldValues>({
           <FormMessage className="text-xs" />
         </FormItem>
       )}
-    ></FormField>
+    />
   );
 }

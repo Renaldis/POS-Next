@@ -19,7 +19,7 @@ export const INITIAL_STATE_PROFILE = {
   avatar_url: "",
 };
 
-export const INIITAL_CREATE_USER_FORM = {
+export const INITIAL_CREATE_USER_FORM = {
   name: "",
   role: "",
   avatar_url: "",
