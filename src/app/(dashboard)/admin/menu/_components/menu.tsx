@@ -3,11 +3,10 @@
 import DataTable from "@/components/common/data-table";
 import DropdownAction from "@/components/common/dropdown-action";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import useDataTable from "@/hooks/use-data-table";
 import { createClient } from "@/lib/supabase/client";
-import { DialogTrigger } from "@radix-ui/react-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -15,8 +14,9 @@ import { toast } from "sonner";
 import { Menu } from "@/validations/menu-validation";
 import Image from "next/image";
 import { cn, convertIDR } from "@/lib/utils";
-import { HEADER_TABLE_MENU } from "@/constant/menu-constants";
+import { HEADER_TABLE_MENU } from "@/constant/menu-constant";
 import DialogCreateMenu from "./dialog-create-menu";
+import DialogUpdateMenu from "./dialog-update-menu";
 
 export default function MenuManagement() {
   const supabase = createClient();
@@ -28,7 +28,6 @@ export default function MenuManagement() {
     handleChangeLimit,
     handleChangeSearch,
   } = useDataTable();
-
   const {
     data: menus,
     isLoading,
@@ -54,6 +53,7 @@ export default function MenuManagement() {
         toast.error("Get Menu data failed", {
           description: result.error.message,
         });
+
       return result;
     },
   });
@@ -68,9 +68,9 @@ export default function MenuManagement() {
   };
 
   const filteredData = useMemo(() => {
-    return (menus?.data || []).map((menu: Menu, idx) => {
+    return (menus?.data || []).map((menu: Menu, index) => {
       return [
-        currentLimit * (currentPage - 1) + idx + 1,
+        currentLimit * (currentPage - 1) + index + 1,
         <div className="flex items-center gap-2">
           <Image
             src={menu.image_url as string}
@@ -84,7 +84,7 @@ export default function MenuManagement() {
         menu.category,
         <div>
           <p>Base: {convertIDR(menu.price)}</p>
-          <p>Discount: {menu.discount ?? 0}</p>
+          <p>Discount: {menu.discount}</p>
           <p>
             After Discount:{" "}
             {convertIDR(menu.price - (menu.price * menu.discount) / 100)}
@@ -92,7 +92,7 @@ export default function MenuManagement() {
         </div>,
         <div
           className={cn(
-            "px-2 rounded-full text-white w-fit",
+            "px-2 py-1 rounded-full text-white w-fit",
             menu.is_available ? "bg-green-600" : "bg-red-500"
           )}
         >
@@ -102,25 +102,31 @@ export default function MenuManagement() {
           menu={[
             {
               label: (
-                <span className="flex items-center gap-2">
+                <span className="flex item-center gap-2">
                   <Pencil />
                   Edit
                 </span>
               ),
               action: () => {
-                setSelectedAction({ data: menu, type: "update" });
+                setSelectedAction({
+                  data: menu,
+                  type: "update",
+                });
               },
             },
             {
               label: (
-                <span className="flex items-center gap-2">
+                <span className="flex item-center gap-2">
                   <Trash2 className="text-red-400" />
                   Delete
                 </span>
               ),
               variant: "destructive",
               action: () => {
-                setSelectedAction({ data: menu, type: "delete" });
+                setSelectedAction({
+                  data: menu,
+                  type: "delete",
+                });
               },
             },
           ]}
@@ -130,8 +136,8 @@ export default function MenuManagement() {
   }, [menus]);
 
   const totalPages = useMemo(() => {
-    return menus && menus?.count !== null
-      ? Math.ceil(menus?.count / currentLimit)
+    return menus && menus.count !== null
+      ? Math.ceil(menus.count / currentLimit)
       : 0;
   }, [menus]);
 
@@ -146,7 +152,7 @@ export default function MenuManagement() {
           />
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant={"outline"}>Create</Button>
+              <Button variant="outline">Create</Button>
             </DialogTrigger>
             <DialogCreateMenu refetch={refetch} />
           </Dialog>
@@ -162,18 +168,12 @@ export default function MenuManagement() {
         onChangePage={handleChangePage}
         onChangeLimit={handleChangeLimit}
       />
-      {/* <DialogUpdateUser
+      <DialogUpdateMenu
         open={selectedAction !== null && selectedAction.type === "update"}
         refetch={refetch}
         currentData={selectedAction?.data}
         handleChangeAction={handleChangeAction}
       />
-      <DialogDeleteUser
-        open={selectedAction !== null && selectedAction.type === "delete"}
-        refetch={refetch}
-        currentData={selectedAction?.data}
-        handleChangeAction={handleChangeAction}
-      /> */}
     </div>
   );
 }

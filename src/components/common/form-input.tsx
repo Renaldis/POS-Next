@@ -43,14 +43,6 @@ export default function FormInput<T extends FieldValues>({
                 type={type}
                 placeholder={placeholder}
                 autoComplete="off"
-                onChange={(e) =>
-                  type === "number"
-                    ? field.onChange(
-                        e.target.value === "" ? "" : Number(e.target.value)
-                      )
-                    : field.onChange(e)
-                }
-                value={field.value ?? ""}
               />
             )}
           </FormControl>

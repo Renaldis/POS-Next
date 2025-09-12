@@ -11,7 +11,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { AVAILABILITY_LIST, CATEGORY_LIST } from "@/constant/menu-constants";
+import { AVAILABILITY_LIST } from "@/constant/auth-constant";
+import { CATEGORY_LIST } from "@/constant/menu-constant";
 import { Preview } from "@/types/general";
 import { Loader2 } from "lucide-react";
 import { FormEvent } from "react";
@@ -33,7 +34,7 @@ export default function FormMenu<T extends FieldValues>({
   setPreview?: (preview: Preview) => void;
 }) {
   return (
-    <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-hidden ">
+    <DialogContent className="sm:max-w-[425px] max-h-[90vh]">
       <Form {...form}>
         <DialogHeader>
           <DialogTitle>{type} Menu</DialogTitle>
@@ -41,9 +42,8 @@ export default function FormMenu<T extends FieldValues>({
             {type === "Create" ? "Add a new menu" : "Make changes menu here"}
           </DialogDescription>
         </DialogHeader>
-
         <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-4 max-h-[50vh] overflow-y-scroll">
+          <div className="space-y-4 max-h-[50vh] px-1 overflow-y-auto">
             <FormInput
               form={form}
               name={"name" as Path<T>}
@@ -77,7 +77,6 @@ export default function FormMenu<T extends FieldValues>({
               placeholder="Insert discount here"
               type="number"
             />
-
             <FormImage
               form={form}
               name={"image_url" as Path<T>}
@@ -92,7 +91,6 @@ export default function FormMenu<T extends FieldValues>({
               selectItem={AVAILABILITY_LIST}
             />
           </div>
-
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>

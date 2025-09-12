@@ -21,22 +21,12 @@ export const CATEGORY_LIST = [
     label: "Desserts",
   },
 ];
-export const AVAILABILITY_LIST = [
-  {
-    value: "true",
-    label: "Available",
-  },
-  {
-    value: "false",
-    label: "Not Available",
-  },
-];
 
 export const INITIAL_MENU = {
   name: "",
   description: "",
-  price: 0,
-  discount: 0,
+  price: "",
+  discount: "",
   category: "",
   image_url: "",
   is_available: "",

@@ -5,7 +5,7 @@ import { createMenu } from "../actions";
 import { toast } from "sonner";
 import { Preview } from "@/types/general";
 import { MenuForm, menuFormSchema } from "@/validations/menu-validation";
-import { INITIAL_MENU, INITIAL_STATE_MENU } from "@/constant/menu-constants";
+import { INITIAL_MENU, INITIAL_STATE_MENU } from "@/constant/menu-constant";
 import FormMenu from "./form-menu";
 
 export default function DialogCreateMenu({ refetch }: { refetch: () => void }) {
@@ -22,11 +22,7 @@ export default function DialogCreateMenu({ refetch }: { refetch: () => void }) {
   const onSubmit = form.handleSubmit((data) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
-      if (key === "image_url" && preview?.file) {
-        formData.append(key, preview.file);
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, String(value));
-      }
+      formData.append(key, key === "image_url" ? preview!.file ?? "" : value);
     });
 
     startTransition(() => {
@@ -43,7 +39,7 @@ export default function DialogCreateMenu({ refetch }: { refetch: () => void }) {
 
     if (createMenuState?.status === "success") {
       toast.success("Create Menu Success");
-      form.reset(INITIAL_MENU);
+      form.reset();
       setPreview(undefined);
       document.querySelector<HTMLButtonElement>('[data-state="open"]')?.click();
       refetch();
