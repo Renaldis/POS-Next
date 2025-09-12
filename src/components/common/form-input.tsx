@@ -26,23 +26,31 @@ export default function FormInput<T extends FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={({ field: { ...rest } }) => (
+      render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
             {type === "textarea" ? (
               <Textarea
-                {...rest}
+                {...field}
                 placeholder={placeholder}
                 autoComplete="off"
                 className="resize-none"
               />
             ) : (
               <Input
-                {...rest}
+                {...field}
                 type={type}
                 placeholder={placeholder}
                 autoComplete="off"
+                onChange={(e) =>
+                  type === "number"
+                    ? field.onChange(
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
+                    : field.onChange(e)
+                }
+                value={field.value ?? ""}
               />
             )}
           </FormControl>
