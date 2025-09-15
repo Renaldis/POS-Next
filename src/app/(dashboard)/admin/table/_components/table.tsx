@@ -11,12 +11,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import Image from "next/image";
-import { cn, convertIDR } from "@/lib/utils";
-import { HEADER_TABLE_MENU } from "@/constant/menu-constant";
+import { cn } from "@/lib/utils";
 import { Table } from "@/validations/table-validation";
 import { HEADER_TABLE_TABLE } from "@/constant/table-constant";
-// import DialogCreateMenu from "./dialog-create-menu";
+import DialogCreateTable from "./dialog-create-table";
 // import DialogUpdateMenu from "./dialog-update-menu";
 // import DialogDeleteMenu from "./dialog-delete-menu";
 
@@ -143,7 +141,7 @@ export default function TableManagement() {
             <DialogTrigger asChild>
               <Button variant="outline">Create</Button>
             </DialogTrigger>
-            {/* <DialogCreateMenu refetch={refetch} /> */}
+            <DialogCreateTable refetch={refetch} />
           </Dialog>
         </div>
       </div>
