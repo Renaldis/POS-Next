@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { createTable } from "../actions";
@@ -7,7 +7,11 @@ import FormTable from "./form-table";
 import { TableForm, tableFormSchema } from "@/validations/table-validation";
 import { INITIAL_STATE_TABLE, INITIAL_TABLE } from "@/constant/table-constant";
 
-export default function DialogCreateTable({ refetch }: { refetch: () => void }) {
+export default function DialogCreateTable({
+  refetch,
+}: {
+  refetch: () => void;
+}) {
   const form = useForm<TableForm>({
     resolver: zodResolver(tableFormSchema),
     defaultValues: INITIAL_TABLE,

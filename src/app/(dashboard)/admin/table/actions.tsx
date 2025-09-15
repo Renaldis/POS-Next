@@ -57,7 +57,7 @@ export async function updateTable(
   const validatedFields = tableSchema.safeParse({
     name: formData.get("name"),
     description: formData.get("description"),
-    capacity: formData.get("capacity"),
+    capacity: parseInt(formData.get("capacity") as string),
     status: formData.get("status"),
   });
 
