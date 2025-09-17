@@ -1,5 +1,5 @@
-export type formState = {
-  status?: string[];
+export type FormState = {
+  status?: string;
   errors?: {
     _form?: string[];
   };
