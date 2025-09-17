@@ -134,7 +134,7 @@ export default function TableManagement() {
         <h1 className="text-2xl font-bold">Menu Management</h1>
         <div className="flex gap-2">
           <Input
-            placeholder="Search by name, capacity, status"
+            placeholder="Search..."
             onChange={(e) => handleChangeSearch(e.target.value)}
           />
           <Dialog>
