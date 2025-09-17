@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { Table } from "@/validations/table-validation";
 import { HEADER_TABLE_TABLE } from "@/constant/table-constant";
 import { HEADER_TABLE_ORDER } from "@/constant/order-constant";
+import DialogCreateOrder from "./dialog-create-order";
 // import DialogCreateTable from "./dialog-create-table";
 // import DialogUpdateTable from "./dialog-update-table";
 // import DialogDeleteTable from "./dialog-delete-table";
@@ -61,6 +62,19 @@ export default function OrderManagement() {
         });
 
       return result;
+    },
+  });
+
+  const { data: tables, refetch: refetchTables } = useQuery({
+    queryKey: ["tables"],
+    queryFn: async () => {
+      const result = await supabase
+        .from("tables")
+        .select("*")
+        .order("created_at")
+        .order("status");
+
+      return result.data;
     },
   });
 
@@ -147,7 +161,7 @@ export default function OrderManagement() {
             <DialogTrigger asChild>
               <Button variant="outline">Create</Button>
             </DialogTrigger>
-            {/* <DialogCreateTable refetch={refetch} /> */}
+            <DialogCreateOrder tables={tables} refetch={refetch} />
           </Dialog>
         </div>
       </div>
