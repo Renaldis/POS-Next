@@ -195,7 +195,7 @@ export default function OrderManagement() {
                   {
                     label: (
                       <Link
-                        href={`/order/${order.order_id}}`}
+                        href={`/order/${order.order_id}`}
                         className="flex items-center gap-2"
                       >
                         <ScrollText />
