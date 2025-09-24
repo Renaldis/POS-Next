@@ -4,9 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { FormState } from "@/types/general";
 import { Cart, OrderFormState } from "@/types/order";
 
-import { TableFormState } from "@/types/table";
 import { orderFormSchema } from "@/validations/order-validation";
-import { tableSchema } from "@/validations/table-validation";
 import { redirect } from "next/navigation";
 
 export async function createOrder(
@@ -122,7 +120,7 @@ export async function addOrderItem(
   data: {
     order_id: string;
     items: Cart[];
-  }
+  } // bisa pake FormData (bebas)
 ) {
   const supabase = await createClient();
 
@@ -140,4 +138,30 @@ export async function addOrderItem(
   }
 
   redirect(`/order/${data.order_id}`);
+}
+
+export async function upateStatusOrderItem(
+  prevState: FormState,
+  formData: FormData
+) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("orders_menus")
+    .update({ status: formData.get("status") })
+    .eq("id", formData.get("id"));
+
+  if (error) {
+    return {
+      status: "error",
+      errors: {
+        ...prevState,
+        _form: [error.message],
+      },
+    };
+  }
+
+  return {
+    status: "success",
+  };
 }
