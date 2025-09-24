@@ -10,11 +10,15 @@ import { Menu } from "@/validations/menu-validation";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
 
+import { Loader2 } from "lucide-react";
+
 export default function CartSection({
   order,
   carts,
   setCarts,
   onAddToCart,
+  isLoading,
+  onOrder,
 }: {
   order:
     | {
@@ -27,6 +31,8 @@ export default function CartSection({
   carts: Cart[];
   setCarts: Dispatch<SetStateAction<Cart[]>>;
   onAddToCart: (item: Menu, type: "decrement" | "increment") => void;
+  isLoading: boolean;
+  onOrder: () => void;
 }) {
   const debounce = useDebounce();
 
@@ -35,6 +41,7 @@ export default function CartSection({
       carts.map((item) => (item.menu_id === id ? { ...item, notes } : item))
     );
   };
+
   return (
     <Card className="w-full shadow-sm">
       <CardContent className="space-y-4">
@@ -112,6 +119,12 @@ export default function CartSection({
           ) : (
             <p className="text-sm">No item in cart</p>
           )}
+          <Button
+            onClick={() => onOrder()}
+            className="w-full font-semibold bg-teal-500 hover:bg-teal-600 cursor-pointer text-white"
+          >
+            {isLoading ? <Loader2 className="animate-spin" /> : "Order"}
+          </Button>
         </div>
       </CardContent>
     </Card>
