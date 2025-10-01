@@ -6,6 +6,13 @@ export const metadata = {
   title: "WPU Cafe | Order Management",
 };
 
+declare global {
+  // agar tidak error di summary window.snap.pay()
+  interface Window {
+    snap: any;
+  }
+}
+
 export default async function DetailOrderPage({
   params,
 }: {
