@@ -1,5 +1,5 @@
 export const INITIAL_LOGIN_FORM = {
-  email: "saputrarenaldi08@gmail.com",
+  email: "",
   password: "",
 };
 
