@@ -7,12 +7,12 @@ import { toast } from "sonner";
 
 export default function DialogDeleteTable({
   open,
-  refetch,
+  // refetch,
   currentData,
   handleChangeAction,
 }: {
   open: boolean;
-  refetch: () => void;
+  // refetch: () => void;
   currentData?: Profile;
   handleChangeAction: (open: boolean) => void;
 }) {
@@ -38,7 +38,7 @@ export default function DialogDeleteTable({
     if (deleteTableState?.status === "success") {
       toast.success("Update Table Success");
       handleChangeAction?.(false);
-      refetch();
+      // refetch();
     }
   }, [deleteTableState]);
 

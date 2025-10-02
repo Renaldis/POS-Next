@@ -14,12 +14,12 @@ import { INITIAL_STATE_TABLE } from "@/constant/table-constant";
 import FormTable from "./form-table";
 
 export default function DialogUpdateTable({
-  refetch,
+  // refetch,
   currentData,
   open,
   handleChangeAction,
 }: {
-  refetch: () => void;
+  // refetch: () => void;
   currentData?: Table;
   open?: boolean;
   handleChangeAction?: (open: boolean) => void;
@@ -54,7 +54,7 @@ export default function DialogUpdateTable({
       toast.success("Update Table Success");
       form.reset();
       handleChangeAction?.(false);
-      refetch();
+      // refetch();
     }
   }, [updateTableState]);
 

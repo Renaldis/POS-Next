@@ -157,13 +157,13 @@ export default function TableManagement() {
       />
       <DialogUpdateTable
         open={selectedAction !== null && selectedAction.type === "update"}
-        refetch={refetch}
+        // refetch={refetch}
         currentData={selectedAction?.data}
         handleChangeAction={handleChangeAction}
       />
       <DialogDeleteTable
         open={selectedAction !== null && selectedAction.type === "delete"}
-        refetch={refetch}
+        // refetch={refetch}
         currentData={selectedAction?.data}
         handleChangeAction={handleChangeAction}
       />

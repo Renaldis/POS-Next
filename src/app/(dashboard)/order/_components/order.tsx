@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import useDataTable from "@/hooks/use-data-table";
-import { createClient } from "@/lib/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import {
   startTransition,
@@ -24,12 +23,16 @@ import { updateReservation } from "../actions";
 import { INITIAL_STATE_ACTION } from "@/constant/general-constant";
 import { Ban, Link2Icon, ScrollText } from "lucide-react";
 import Link from "next/link";
-// import DialogCreateTable from "./dialog-create-table";
-// import DialogUpdateTable from "./dialog-update-table";
-// import DialogDeleteTable from "./dialog-delete-table";
+import DialogUpdateTable from "../../admin/table/_components/dialog-update-table";
+import DialogDeleteTable from "../../admin/table/_components/dialog-delete-table";
+import { useAuthStore } from "@/stores/auth-store";
+import CreateClientSupabase from "@/lib/supabase/default";
 
 export default function OrderManagement() {
-  const supabase = createClient();
+  const supabase = CreateClientSupabase();
+
+  const profile = useAuthStore((state) => state.profile);
+
   const {
     currentPage,
     currentLimit,
@@ -41,7 +44,7 @@ export default function OrderManagement() {
   const {
     data: orders,
     isLoading,
-    refetch,
+    refetch: refetchOrders,
   } = useQuery({
     queryKey: ["orders", currentPage, currentLimit, currentSearch],
     queryFn: async () => {
@@ -85,6 +88,29 @@ export default function OrderManagement() {
       return result.data;
     },
   });
+
+  // implementasi realtime data
+  useEffect(() => {
+    const channel = supabase
+      .channel("change-order")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "orders",
+        },
+        () => {
+          refetchOrders();
+          refetchTables();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const [selectedAction, setSelectedAction] = useState<{
     data: Table;
@@ -133,8 +159,7 @@ export default function OrderManagement() {
 
     if (reservedState?.status === "success") {
       toast.success("Update Reservation Success");
-      refetch();
-      refetchTables();
+      refetchOrders();
     }
   }, [reservedState]);
 
@@ -172,7 +197,7 @@ export default function OrderManagement() {
         (order.tables as unknown as { name: string }).name,
         <div
           className={cn("px-2 py-1 rounded-full text-white w-fit capitalize", {
-            "bg-green-600": order.status === "settle",
+            "bg-green-600": order.status === "settled",
             "bg-sky-600": order.status === "process",
             "bg-yellow-600": order.status === "reserved",
             "bg-red-600": order.status === "canceled",
@@ -182,7 +207,7 @@ export default function OrderManagement() {
         </div>,
         <DropdownAction
           menu={
-            order.status === "reserved"
+            order.status === "reserved" && profile.role !== "kitchen"
               ? reservedActionList.map((item) => ({
                   label: item.label,
                   action: () =>
@@ -220,12 +245,15 @@ export default function OrderManagement() {
             placeholder="Search..."
             onChange={(e) => handleChangeSearch(e.target.value)}
           />
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">Create</Button>
-            </DialogTrigger>
-            <DialogCreateOrder tables={tables} refetch={refetch} />
-          </Dialog>
+
+          {profile.role !== "kitchen" && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline">Create</Button>
+              </DialogTrigger>
+              <DialogCreateOrder tables={tables} />
+            </Dialog>
+          )}
         </div>
       </div>
       <DataTable
@@ -238,18 +266,18 @@ export default function OrderManagement() {
         onChangePage={handleChangePage}
         onChangeLimit={handleChangeLimit}
       />
-      {/* <DialogUpdateTable
+      <DialogUpdateTable
         open={selectedAction !== null && selectedAction.type === "update"}
-        refetch={refetch}
+        // refetch={refetch}
         currentData={selectedAction?.data}
         handleChangeAction={handleChangeAction}
       />
       <DialogDeleteTable
         open={selectedAction !== null && selectedAction.type === "delete"}
-        refetch={refetch}
+        // refetch={refetch}
         currentData={selectedAction?.data}
         handleChangeAction={handleChangeAction}
-      /> */}
+      />
     </div>
   );
 }

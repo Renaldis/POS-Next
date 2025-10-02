@@ -11,6 +11,7 @@ import { INITIAL_STATE_GENERAL_PAYMENT } from "@/constant/order-constant";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { useAuthStore } from "@/stores/auth-store";
 
 export default function Summary({
   order,
@@ -29,9 +30,10 @@ export default function Summary({
   id: string;
 }) {
   const { grandTotal, service, tax, totalPrice } = usePricing(orderMenu);
+  const profile = useAuthStore((state) => state.profile);
 
   const isAllServed = useMemo(() => {
-    return orderMenu?.every((item) => item.status === "served"); // very ngecek pengkondisian semuanya
+    return orderMenu?.every((item) => item.status === "served"); // every ngecek pengkondisian semuanya
   }, [orderMenu]);
 
   const [
@@ -100,7 +102,7 @@ export default function Summary({
             <p className="text-lg font-semibold">Total</p>
             <p className="text-sm font-semibold">{convertIDR(grandTotal)}</p>
           </div>
-          {order.status === "process" && (
+          {order.status === "process" && profile.role !== "kitchen" && (
             <Button
               type="submit"
               className="w-full font-semibold bg-teal-500 hover:bg-teal-600 text-white cursor-pointer"
