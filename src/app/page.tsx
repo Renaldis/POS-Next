@@ -1,5 +1,6 @@
 "use client";
 
+import Charts from "@/components/common/line-chart";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth-store";
 import Link from "next/link";
