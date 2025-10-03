@@ -191,6 +191,10 @@ export async function generatePayment(
     customer_details: {
       first_name: customerName,
     },
+    callbacks: {
+      finish: "https://pos-next-psi.vercel.app/payment/success",
+      error: "https://pos-next-psi.vercel.app/payment/failed",
+    },
   };
 
   try {
